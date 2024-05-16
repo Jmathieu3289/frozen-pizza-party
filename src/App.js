@@ -16,7 +16,7 @@ function App() {
       setData(data);
     }
     fetchData();
-  }, [])
+  }, [supabase])
 
   return (
     <div className="App">
