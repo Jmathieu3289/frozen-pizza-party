@@ -11,3 +11,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.homepage {
+  background: linear-gradient(0deg, rgba(50, 50, 50, 0.6), rgba(50, 50, 50, 0.6)), url("https://i.imgur.com/TOHxXMP.png");
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-color: black !important;
+  font-size: 20px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}

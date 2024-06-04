@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-distracting-elements */
+/* eslint-disable jsx-a11y/alt-text */
 import { useEffect, useState } from 'react';
 import './App.css';
 import { createClient } from  '@supabase/supabase-js';
@@ -16,10 +18,11 @@ const jsConfetti = new JSConfetti()
 
 function App() {
 
-  const [data, setData] = useState([]);
+  const [report, setReport] = useState([]);
   const [visitorId, setVisitorId] = useState('');
   const [selectedPizza, setSelectedPizza] = useState(null);
   const [thanks, setThanks] = useState(false);
+  const [results, setResults] = useState(false);
 
   const [crust, setCrust] = useState(2.5);
   const [sauce, setSauce] = useState(2.5);
@@ -37,10 +40,14 @@ function App() {
       // Get pizza data
       const { data } = await supabase.from('pizza').select();
       if (data) {
-        setData(data);
-
         const pizza = data.find((d) => d.id.toString() === queryParameters.get('pizza'));
         setSelectedPizza(pizza);
+
+        const results = queryParameters.get('results');
+        if (results) {
+          const resultsData = (await supabase.from('rating_results').select()).data;
+          setResults(resultsData);
+        }
 
         const thanks = queryParameters.get('thanks');
         if (thanks) {
@@ -73,18 +80,59 @@ function App() {
           <h1>Thanks for your rating!</h1>
         </Stack>
       )}
-      { (!thanks && !selectedPizza) && (
-        <>
-          {
-            data.map((d) => (
-              <div key={d.id}>{d.id} - {d.brand} - {d.flavor} - ${d.price}</div>
-            ))
-          }
-        </>
+      { results && (
+        <Stack className="justify-content-center">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Pizza</th>
+                <th>Crust</th>
+                <th>Sauce</th>
+                <th>Toppings</th>
+                <th>Value</th>
+                <th>Overall</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                results.map((result, i) => (
+                  <tr>
+                    <td>{i+1}</td>
+                    <td>{result.brand} {result.flavor}</td>
+                    <td>{result.average_crust}</td>
+                    <td>{result.average_sauce}</td>
+                    <td>{result.average_toppings}</td>
+                    <td>{result.average_value}</td>
+                    <td className="fw-bold">{result.average_overall}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </Stack>
+      )}
+      { (!thanks && !selectedPizza && !results) && (
+        <div className="homepage">
+          <div className="container">
+            <header>
+              <img src="https://i.gifer.com/4V4f.gif" width="100" height="100" />
+              <h1 className="text-white">Frozen Pizza Showdown</h1>
+              <img src="https://i.gifer.com/1NOR.gif" width="100" height="100" />
+            </header>
+            <main className="text-white" style={{ textAlign: "center"}}>
+              <h2>Welcome to Kate and Justin's Frozen Pizza Showdown, where we find the best frozen pizza!</h2>
+              <br></br>
+              <h3>For the past six months, we have been tirelessly testing and ranking every frozen pizza we could get our hands on. Now, we invite you to sample our top ten pizzas (and bottom three pizzas) and together we can definitively determine the best frozen pizza!</h3>
+              <br></br>
+              <p className="fw-bold">There are four categories used for ranking: Crust, Sauce, Toppings, and Value. We use a scale of 1 to 5, with 1 being the worst and 5 being the best. Simply scan the QR code next to the pizza and give us your opinions!</p>
+            </main>
+          </div>
+        </div>
       )}
       { (!thanks && selectedPizza) && (
         <>
-          <h1 className="mb-2 mt-2">{selectedPizza.brand} {selectedPizza.flavor}</h1>
+          <h1 className="mb-2 mt-2 bg-transparent">{selectedPizza.brand} {selectedPizza.flavor}</h1>
           <Stack gap={5} className="mx-4 mt-5">
             <div>
               <h2>Crust - {crust}</h2>
