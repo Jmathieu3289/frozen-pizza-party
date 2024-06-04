@@ -18,7 +18,6 @@ const jsConfetti = new JSConfetti()
 
 function App() {
 
-  const [report, setReport] = useState([]);
   const [visitorId, setVisitorId] = useState('');
   const [selectedPizza, setSelectedPizza] = useState(null);
   const [thanks, setThanks] = useState(false);
