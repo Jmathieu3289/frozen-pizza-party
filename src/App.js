@@ -20,6 +20,7 @@ function App() {
 
   const [visitorId, setVisitorId] = useState('');
   const [selectedPizza, setSelectedPizza] = useState(null);
+  const [currentRating, setCurrentRating] = useState(null);
   const [thanks, setThanks] = useState(false);
   const [results, setResults] = useState(false);
 
@@ -42,6 +43,17 @@ function App() {
         const pizza = data.find((d) => d.id.toString() === queryParameters.get('pizza'));
         setSelectedPizza(pizza);
 
+        if (pizza) {
+          const rating = (await supabase.from('pizza_rating').select().eq('fingerprint', result.visitorId).eq('pizza_id', pizza.id)).data;
+          if (rating && rating.length > 0) {
+            setCurrentRating(rating[0]);
+            setCrust(parseFloat(rating[0].crust));
+            setSauce(parseFloat(rating[0].sauce));
+            setToppings(parseFloat(rating[0].toppings));
+            setValue(parseFloat(rating[0].value));
+          }
+        }
+
         const results = queryParameters.get('results');
         if (results) {
           const resultsData = (await supabase.from('rating_results').select()).data;
@@ -60,15 +72,28 @@ function App() {
 
   const submitPizzaRating = async () => {
     setSubmitting(true);
-    await supabase.from('pizza_rating').insert({
-      fingerprint: visitorId,
-      crust: crust,
-      sauce: sauce,
-      toppings: toppings,
-      value: value,
-      overall: (parseFloat(crust) + parseFloat(sauce) + parseFloat(toppings) + parseFloat(value)) / 4,
-      pizza_id: selectedPizza.id
-    });
+    if (!currentRating) {
+      await supabase.from('pizza_rating').insert({
+        fingerprint: visitorId,
+        crust: crust,
+        sauce: sauce,
+        toppings: toppings,
+        value: value,
+        overall: (parseFloat(crust) + parseFloat(sauce) + parseFloat(toppings) + parseFloat(value)) / 4,
+        pizza_id: selectedPizza.id
+      });
+    } else {
+      await supabase
+      .from('pizza_rating').update({
+        crust: parseFloat(crust),
+        sauce: parseFloat(sauce),
+        toppings: parseFloat(toppings),
+        value: parseFloat(value),
+        overall: (parseFloat(crust) + parseFloat(sauce) + parseFloat(toppings) + parseFloat(value)) / 4,
+      })
+      .eq('id', currentRating.id);
+    }
+    setCurrentRating(null);
     window.location.href = '/?thanks=true'
   };
 
@@ -131,7 +156,8 @@ function App() {
       )}
       { (!thanks && selectedPizza) && (
         <>
-          <h1 className="mb-2 mt-2 bg-transparent">{selectedPizza.brand} {selectedPizza.flavor}</h1>
+          <h1 className="mb-2 mt-2">{selectedPizza.brand} {selectedPizza.flavor} { currentRating && "(Updating)"}</h1>
+          <h2>${selectedPizza.price}</h2>
           <Stack gap={5} className="mx-4 mt-5">
             <div>
               <h2>Crust - {crust}</h2>
