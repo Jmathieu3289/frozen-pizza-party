@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/frozen-pizza-party/static/css/main.ef0bcb8d.css",
-    "main.js": "/frozen-pizza-party/static/js/main.bcdd9c64.js",
+    "main.js": "/frozen-pizza-party/static/js/main.6f99c928.js",
     "static/js/952.fc373904.chunk.js": "/frozen-pizza-party/static/js/952.fc373904.chunk.js",
     "static/js/453.2fa75bd6.chunk.js": "/frozen-pizza-party/static/js/453.2fa75bd6.chunk.js",
     "index.html": "/frozen-pizza-party/index.html",
     "main.ef0bcb8d.css.map": "/frozen-pizza-party/static/css/main.ef0bcb8d.css.map",
-    "main.bcdd9c64.js.map": "/frozen-pizza-party/static/js/main.bcdd9c64.js.map",
+    "main.6f99c928.js.map": "/frozen-pizza-party/static/js/main.6f99c928.js.map",
     "952.fc373904.chunk.js.map": "/frozen-pizza-party/static/js/952.fc373904.chunk.js.map",
     "453.2fa75bd6.chunk.js.map": "/frozen-pizza-party/static/js/453.2fa75bd6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ef0bcb8d.css",
-    "static/js/main.bcdd9c64.js"
+    "static/js/main.6f99c928.js"
   ]
 }
